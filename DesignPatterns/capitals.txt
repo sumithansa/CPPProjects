@@ -1,0 +1,6 @@
+Delhi
+1000000
+Mumbai
+2000000
+Kolkata
+3000000
