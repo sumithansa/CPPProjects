@@ -82,5 +82,6 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "D:/C++/CPPProjects/CMake_tutorials"
 }

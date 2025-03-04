@@ -13,9 +13,9 @@ int main()
     // 2D arrays
     int** a2d = new int*[4]; // setting rows - most imprtant thing
 
-    for (int i =0; i<3; i++)
+    for (int i =0; i<4; i++)
     {
-        a2d[i] = new int[4]; // setting columns
+        a2d[i] = new int[3]; // setting columns
     }
 
     for(int i =0; i <3; i++)

@@ -1,2 +1,3 @@
 
-    for(int i =0; i<4; i++)
+    std::unique_ptr<Entity> Ptr1(new Entity());
+    std::unique_ptr<Entity> Ptr2 = std::make_unique<Entity>();

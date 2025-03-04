@@ -1,0 +1,4 @@
+D:/C++/CPPProjects/CMake_tutorials/build/CMakeFiles/ALL_BUILD.dir
+D:/C++/CPPProjects/CMake_tutorials/build/CMakeFiles/ZERO_CHECK.dir
+D:/C++/CPPProjects/CMake_tutorials/build/src/CMakeFiles/Library.dir
+D:/C++/CPPProjects/CMake_tutorials/build/app/CMakeFiles/Executable.dir

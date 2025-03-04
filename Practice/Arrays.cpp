@@ -1,20 +1,41 @@
-#include<iostream>
+/* Shared pointer
 
-int arraySum(int arr[], int size)
+
+*/
+
+#include<iostream>
+#include <cstring>
+#include<string>
+#include<array>
+
+#define log(x) std::cout<<x<<std::endl
+
+template<typename T, std::size_t N>
+class array
 {
-    int sum = 0;
-    for (int i =0; i<size; i++)
+    T m_array[N];
+public:
+    array()
     {
-        sum += arr[i];
+        log("Constructed array!");
     }
-    return sum;
+
+    size_t Size()const{return N;}
+    T& operator[](int index)const{return m_array[index];}
+    T& begin()const{return m_array[0];}
+    T& end()const{return m_array[N-1];}
+
+};
+
+template<typename T, std::size_t N>
+void print_array(const std::array<T, N> &arr)
+{
+    for(auto &i : arr)
+        log(i);
 }
+
 int main()
 {
-    int arr[] = {1,2,3,-4,-5,6,7};
-    for(int num:arr)
-    {
-        std::cout<<num<<std::endl;
-    }
-    std::cout<<"Sum is: "<<arraySum(arr, 7)<<std::endl;
+    std::array<int, 7> my_array;
+    print_array(my_array);
 }
