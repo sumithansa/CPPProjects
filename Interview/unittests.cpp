@@ -1,5 +1,5 @@
 #include"customString.cpp"
-//#include"gtest/gtest.h" // Assuming this to be the path of google tests
+#include"googletest/include/gtest/gtest.h" // Assuming this to be the path of google tests
 
 TEST(customStringTest, SizeTest) 
 {

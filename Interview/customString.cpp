@@ -211,7 +211,7 @@ customString concat_new(const customString& str1, const customString& str2)// co
     return out;
 }
 
-int main()
+int maintain()
 {
     customString c1;
     c1.init("abcdef");
