@@ -97,7 +97,10 @@ struct customString
     {
         m_size = 0;
         if(m_string)
+        {
             delete[] m_string;
+            m_string = nullptr;
+        }
         log("Freed customString!");
     }
     

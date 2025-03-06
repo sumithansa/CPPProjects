@@ -1,6 +1,8 @@
 #include"customString.cpp"
 #include"googletest/include/gtest/gtest.h" // Assuming this to be the path of google tests
 
+// command to execute this test: g++ unittests.cpp -Igoogletest/include -Lgoogletest/lib -lgtest -lgtest_main -pthread -o unittests.exe
+
 TEST(customStringTest, SizeTest) 
 {
     customString c1("Hello");
@@ -55,7 +57,7 @@ TEST(customStringTest, SubStringTest)
     customString c1, c2;
     c1.init("Hello, World!");
     c2 = c1.substr(7, 5);
-    ASSERT_EQ(c2.m_string, "World");
+    ASSERT_TRUE(c2.compare("World"));
 }
 
 TEST(customStringTest, concatTest) 
@@ -65,7 +67,7 @@ TEST(customStringTest, concatTest)
     c2.init("world!");
     c3=concat_new(c1, c2);
     c1.concat(c2);
-    ASSERT_EQ(c1.m_string, c3.m_string);
+    ASSERT_TRUE(c3.compare(c1));
 }
 
 TEST(customStringTest, compareTest) 
@@ -74,8 +76,8 @@ TEST(customStringTest, compareTest)
     c1.init("Hello");
     c2.init("world!");
     c3=c2;
-    ASSERT_NE(c1.m_string, c2.m_string);
-    ASSERT_EQ(c3.m_string, c2.m_string);
+    ASSERT_TRUE(c3.compare(c2));
+    ASSERT_FALSE(c1.compare(c2));
 }
 
 
