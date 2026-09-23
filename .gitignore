@@ -1,1 +1,30 @@
+# Build output
+build/
+out/
+cmake-build-*/
+CMakeUserPresets.json
+compile_commands.json
+.cache/
+
+# Editors / IDEs (keep local settings out of the repo)
+.vscode/
+.vs/
+.idea/
+*.code-workspace
+
+# Compiled artefacts
 *.exe
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.pdb
+*.ilk
+*.dSYM/
+
+# OS noise
+.DS_Store
+Thumbs.db

@@ -1,6 +1,0 @@
-abcdstd::string
-efghstd::string
-std::string
-std::wstring
-qb
-de
