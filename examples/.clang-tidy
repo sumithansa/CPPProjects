@@ -1,0 +1,13 @@
+---
+# Tests and demos deliberately copy handles to observe refcounts, count
+# special-member calls, and fill vectors in loops; these checks don't apply.
+InheritParentConfig: true
+Checks: >
+  -cppcoreguidelines-special-member-functions,
+  -performance-inefficient-vector-operation,
+  -performance-unnecessary-copy-initialization,
+  -readability-convert-member-functions-to-static,
+  -readability-non-const-parameter,
+  -bugprone-unchecked-optional-access,
+  -cert-err58-cpp
+...
