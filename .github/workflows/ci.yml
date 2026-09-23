@@ -1,0 +1,124 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux GCC 14
+            os: ubuntu-24.04
+            cc: gcc-14
+            cxx: g++-14
+            generator: Ninja
+          - name: Linux Clang 18
+            os: ubuntu-24.04
+            cc: clang-18
+            cxx: clang++-18
+            generator: Ninja
+          - name: macOS AppleClang
+            os: macos-14
+            cc: clang
+            cxx: clang++
+            generator: Ninja
+          - name: Windows MSVC
+            os: windows-2022
+            generator: Visual Studio 17 2022
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Ninja
+        if: matrix.generator == 'Ninja'
+        uses: seanmiddleditch/gha-setup-ninja@v5
+
+      - name: Configure
+        shell: bash
+        env:
+          CC: ${{ matrix.cc }}
+          CXX: ${{ matrix.cxx }}
+        run: >
+          cmake -S . -B build -G "${{ matrix.generator }}"
+          -DCMAKE_BUILD_TYPE=Release
+          -DSK_WARNINGS_AS_ERRORS=ON
+          -DSK_BUILD_BENCHMARKS=ON
+
+      - name: Build
+        run: cmake --build build --config Release --parallel
+
+      - name: Test
+        run: ctest --test-dir build -C Release --output-on-failure --parallel 4
+
+  sanitizers:
+    name: ${{ matrix.sanitizer }} sanitizer
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        sanitizer: ["address;undefined", "thread"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: seanmiddleditch/gha-setup-ninja@v5
+
+      # Newer kernels use more ASLR entropy than TSan's shadow-memory layout supports.
+      - name: Reduce ASLR entropy for TSan
+        if: matrix.sanitizer == 'thread'
+        run: sudo sysctl vm.mmap_rnd_bits=28
+
+      - name: Configure
+        env:
+          CC: clang-18
+          CXX: clang++-18
+        run: >
+          cmake -S . -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=Debug
+          -DSK_WARNINGS_AS_ERRORS=ON
+          -DSK_SANITIZERS="${{ matrix.sanitizer }}"
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Test
+        env:
+          ASAN_OPTIONS: detect_leaks=1:strict_string_checks=1:detect_stack_use_after_return=1
+          UBSAN_OPTIONS: print_stacktrace=1
+          TSAN_OPTIONS: halt_on_error=1
+        run: ctest --test-dir build --output-on-failure --parallel 4
+
+  lint:
+    name: clang-format + clang-tidy
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: seanmiddleditch/gha-setup-ninja@v5
+
+      # Pinned so CI and local runs agree on formatting and diagnostics.
+      - name: Install tools
+        run: pip install clang-format==23.1.1 clang-tidy==22.1.8
+
+      - name: clang-format
+        run: |
+          find libs algorithms examples benchmarks \( -name '*.hpp' -o -name '*.cpp' \) \
+            -exec clang-format --dry-run -Werror {} +
+
+      - name: Configure (compile_commands.json)
+        env:
+          CC: clang-18
+          CXX: clang++-18
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
+
+      - name: clang-tidy
+        run: |
+          find libs algorithms examples -name '*.cpp' -print0 \
+            | xargs -0 -P "$(nproc)" -n 1 clang-tidy -p build --quiet
